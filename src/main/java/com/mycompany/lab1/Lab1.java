@@ -5,8 +5,6 @@
 package com.mycompany.lab1;
 
 import com.mycompany.lab1.Food.Food;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -31,14 +29,15 @@ public class Lab1 {
                 String className = Food.class.getPackageName() + '.' + parts[0];
                 Class clazz = Class.forName(className);
                 
-                breakfast[itemsSoFar] = switch(parts.length - 1){
-                    case(0) -> (Food)clazz.getConstructors()[0].newInstance();
-                    case(1) -> (Food)clazz.getConstructors()[0].newInstance(parts[1]);
-                    case(2) -> (Food)clazz.getConstructors()[0].newInstance(parts[1], parts[2]);
-                    case(3) -> (Food)clazz.getConstructors()[0].newInstance(parts[1], parts[2], parts[3]);
-                    case(4) -> (Food)clazz.getConstructors()[0].newInstance(parts[1], parts[2], parts[3], parts[4]);
-                    default -> null;
-                };
+                Class[] parameterTypes = new Class[parts.length-1];
+                for(int i=0;i + 1 < parts.length; i++)
+                    parameterTypes[i] = parts[i + 1].getClass();
+                
+                var constructor = clazz.getConstructor(parameterTypes);
+                
+                var parameterValues = Arrays.stream(parts).skip(1).toArray(String[]::new);
+                
+                breakfast[itemsSoFar] = (Food)constructor.newInstance(parameterValues);
                 //end of construction
 
                 itemsSoFar++;
@@ -83,6 +82,8 @@ public class Lab1 {
                     return 0;
                 };
                 
+                System.out.println();
+                System.out.println("Products by components:");
                 Arrays.stream(breakfast).filter(x -> x != null).sorted(comp)
                         .forEach(System.out::println);
             }
