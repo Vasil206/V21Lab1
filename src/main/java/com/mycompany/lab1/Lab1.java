@@ -4,10 +4,9 @@
 
 package com.mycompany.lab1;
 
-import com.mycompany.lab1.Food.Apple;
 import com.mycompany.lab1.Food.Food;
-import com.mycompany.lab1.Food.Dessert;
-import com.mycompany.lab1.Food.Cheese;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -31,7 +30,8 @@ public class Lab1 {
                 //Reflection API construct an object
                 String className = Food.class.getPackageName() + '.' + parts[0];
                 Class clazz = Class.forName(className);
-                breakfast[itemsSoFar] = switch(clazz.getConstructors()[0].getParameterCount()){
+                
+                breakfast[itemsSoFar] = switch(parts.length - 1){
                     case(0) -> (Food)clazz.getConstructors()[0].newInstance();
                     case(1) -> (Food)clazz.getConstructors()[0].newInstance(parts[1]);
                     case(2) -> (Food)clazz.getConstructors()[0].newInstance(parts[1], parts[2]);
